@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f5f7fa" />
+    <meta name="description" content="Espace privé de facturation et de suivi des paiements InovTech." />
+    <title>Gestion — InovTech</title>
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/app.js" defer></script>
+  </head>
+  <body>
+    <main id="login-view" class="login-layout">
+      <section class="login-card" aria-labelledby="login-title">
+        <a class="brand" href="/" aria-label="InovTech">
+          <span class="brand-mark">I</span>
+          <span>InovTech <small>GESTION</small></span>
+        </a>
+        <p class="eyebrow">ESPACE PRIVÉ</p>
+        <h1 id="login-title">Content de vous revoir.</h1>
+        <p class="muted">Connectez-vous pour gérer vos clients, factures et paiements.</p>
+        <form id="login-form" class="form-stack">
+          <label>Adresse e-mail<input name="email" type="email" autocomplete="username" required maxlength="254" /></label>
+          <label>Mot de passe<input name="password" type="password" autocomplete="current-password" required maxlength="200" /></label>
+          <button class="button button-primary" type="submit">Se connecter</button>
+          <p id="login-error" class="form-message" role="alert"></p>
+        </form>
+        <a class="back-link" href="/">← Retour au site InovTech</a>
+      </section>
+    </main>
+
+    <div id="app-view" class="app-layout" hidden>
+      <aside class="sidebar">
+        <a class="brand" href="/" aria-label="InovTech Gestion">
+          <span class="brand-mark">I</span>
+          <span>InovTech <small>GESTION</small></span>
+        </a>
+        <nav class="side-nav" aria-label="Navigation de gestion">
+          <button class="nav-item is-active" data-page="dashboard">Vue d’ensemble</button>
+          <button class="nav-item" data-page="invoices">Factures</button>
+          <button class="nav-item" data-page="clients">Clients</button>
+          <button class="nav-item admin-only" data-page="team" hidden>Équipe</button>
+        </nav>
+        <div class="sidebar-bottom">
+          <span id="current-user" class="current-user"></span>
+          <button id="logout-button" class="button button-quiet" type="button">Se déconnecter</button>
+        </div>
+      </aside>
+
+      <main class="main-content">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">INOVTECH · GESTION</p>
+            <h1 id="page-title">Vue d’ensemble</h1>
+          </div>
+          <button id="new-invoice-top" class="button button-primary" type="button">+ Nouvelle facture</button>
+        </header>
+
+        <section class="page-section is-visible" id="page-dashboard" aria-labelledby="page-title">
+          <p class="intro">Suivez les factures émises et les paiements attendus.</p>
+          <div class="summary-grid">
+            <article class="summary-card"><span>Clients</span><strong id="summary-clients">—</strong></article>
+            <article class="summary-card"><span>Factures émises</span><strong id="summary-invoices">—</strong></article>
+            <article class="summary-card"><span>En retard</span><strong id="summary-overdue">—</strong></article>
+            <article class="summary-card"><span>À recevoir · USD</span><strong id="summary-usd">—</strong></article>
+            <article class="summary-card"><span>À recevoir · CDF</span><strong id="summary-cdf">—</strong></article>
+          </div>
+          <div class="section-heading">
+            <div><p class="eyebrow">ACTIVITÉ</p><h2>Factures récentes</h2></div>
+            <button class="text-button" type="button" data-page-link="invoices">Toutes les factures →</button>
+          </div>
+          <div id="recent-invoices" class="table-wrap"></div>
+        </section>
+
+        <section class="page-section" id="page-invoices" aria-labelledby="invoices-title" hidden>
+          <div class="section-heading">
+            <div><p class="eyebrow">SUIVI FINANCIER</p><h2 id="invoices-title">Factures</h2></div>
+            <button id="new-invoice" class="button button-primary" type="button">+ Nouvelle facture</button>
+          </div>
+          <div id="invoice-list" class="table-wrap"></div>
+        </section>
+
+        <section class="page-section" id="page-clients" aria-labelledby="clients-title" hidden>
+          <div class="section-heading">
+            <div><p class="eyebrow">CARNET D’ADRESSES</p><h2 id="clients-title">Clients</h2></div>
+          </div>
+          <form id="client-form" class="panel form-grid">
+            <h3 class="form-grid-title">Ajouter un client</h3>
+            <label>Nom du contact *<input name="name" required maxlength="160" /></label>
+            <label>Entreprise<input name="organization" maxlength="160" /></label>
+            <label>E-mail<input name="email" type="email" maxlength="254" /></label>
+            <label>Téléphone<input name="phone" type="tel" maxlength="40" /></label>
+            <label class="wide-field">Adresse<input name="address" maxlength="500" /></label>
+            <div class="wide-field form-actions"><button class="button button-primary" type="submit">Enregistrer le client</button></div>
+          </form>
+          <div id="client-list" class="table-wrap"></div>
+        </section>
+
+        <section class="page-section" id="page-team" aria-labelledby="team-title" hidden>
+          <div class="section-heading">
+            <div><p class="eyebrow">ACCÈS PRIVÉS</p><h2 id="team-title">Équipe</h2></div>
+          </div>
+          <form id="user-form" class="panel form-grid">
+            <h3 class="form-grid-title">Créer un compte</h3>
+            <label>Nom complet *<input name="name" required maxlength="160" /></label>
+            <label>E-mail *<input name="email" type="email" required maxlength="254" /></label>
+            <label>Mot de passe temporaire *<input name="password" type="password" required minlength="12" maxlength="200" autocomplete="new-password" /></label>
+            <label>Rôle<select name="role"><option value="member">Membre</option><option value="admin">Administrateur</option></select></label>
+            <div class="wide-field form-actions"><button class="button button-primary" type="submit">Créer le compte</button></div>
+          </form>
+          <div id="user-list" class="table-wrap"></div>
+        </section>
+      </main>
+    </div>
+
+    <dialog id="invoice-dialog" class="dialog">
+      <form id="invoice-form" class="dialog-card">
+        <div class="dialog-heading">
+          <div><p class="eyebrow">NOUVEAU DOCUMENT</p><h2>Créer une facture</h2></div>
+          <button class="icon-button" type="button" data-close-dialog aria-label="Fermer">×</button>
+        </div>
+        <label>Client *
+          <select name="clientId" required><option value="">Choisir un client…</option></select>
+        </label>
+        <div class="form-grid compact-grid">
+          <label>Devise<select name="currency"><option value="USD">USD</option><option value="CDF">CDF</option></select></label>
+          <label>Date d’émission<input name="issueDate" type="date" required /></label>
+          <label>Date d’échéance<input name="dueDate" type="date" required /></label>
+        </div>
+        <div class="items-heading"><h3>Prestations</h3><button id="add-item" class="text-button" type="button">+ Ajouter une ligne</button></div>
+        <div id="invoice-items" class="invoice-items"></div>
+        <label>Notes (facultatif)<textarea name="notes" rows="2" maxlength="2000"></textarea></label>
+        <p class="total-line">Total estimé <strong id="invoice-total">0 USD</strong></p>
+        <p class="muted small">La facture reste en brouillon jusqu’à son émission. Le PDF peut ensuite être imprimé ou enregistré depuis le navigateur.</p>
+        <div class="dialog-actions"><button class="button button-quiet" type="button" data-close-dialog>Annuler</button><button class="button button-primary" type="submit">Créer le brouillon</button></div>
+      </form>
+    </dialog>
+
+    <dialog id="detail-dialog" class="dialog">
+      <article id="invoice-detail" class="dialog-card detail-card"></article>
+    </dialog>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  </body>
+</html>

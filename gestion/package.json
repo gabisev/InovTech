@@ -1,0 +1,18 @@
+{
+  "name": "inovtech-gestion",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Espace privé de facturation et de suivi des paiements InovTech",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node --env-file=.env server.js",
+    "create-admin": "node --env-file=.env scripts/create-admin.js",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "pg": "^8.16.3"
+  }
+}
